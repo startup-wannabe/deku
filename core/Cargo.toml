@@ -1,0 +1,13 @@
+[package]
+edition = "2021"
+name = "deku-core"
+version = "0.1.0"
+
+[dependencies]
+alloy = { version = "0.7", features = [ "full" ] }
+futures = { version = "0.3.31", default-features = false, features = [ "std" ] }
+subxt = { version = "0.38.0", features = [ "unstable-light-client" ] }
+tokio = { version = "1.40", default-features = false, features = [
+	"rt-multi-thread",
+] }
+tracing-subscriber = { version = "0.3.18", features = [ "env-filter" ] }

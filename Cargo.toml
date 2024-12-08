@@ -1,0 +1,9 @@
+[workspace.package]
+authors = [ "Tin Chung <cqtin0903@gmail.com>" ]
+description = "DEKY Unknown"
+edition = "2021"
+license = "Unlicense"
+
+[workspace]
+members = [ "adapters", "core", "primitives" ]
+resolver = "2"
