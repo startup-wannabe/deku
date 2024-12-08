@@ -10,6 +10,7 @@ version = "0.1.0"
 eyre.workspace = true
 futures = { workspace = true, default-features = false }
 solana-client.workspace = true
+solana-sdk.workspace = true
 tokio = { workspace = true, features = [ "rt-multi-thread" ] }
 tracing.workspace = true
 

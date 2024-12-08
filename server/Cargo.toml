@@ -1,0 +1,28 @@
+[package]
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+license.workspace = true
+name = "deku-server"
+version = "0.1.0"
+
+[dependencies]
+eyre.workspace = true
+futures.workspace = true
+tokio.workspace = true
+tracing-subscriber = { workspace = true, features = [
+	"env-filter",
+	"fmt",
+	"std",
+] }
+tracing.workspace = true
+
+# Local dependencies
+deku-sdk.workspace = true
+
+[features]
+default = [ "std" ]
+std = [
+	"deku-sdk/std",
+	"futures/std",
+]

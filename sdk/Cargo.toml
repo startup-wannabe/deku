@@ -1,18 +1,22 @@
 [package]
-edition = "2021"
-name = "deku-core"
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+license.workspace = true
+name = "deku-sdk"
 version = "0.1.0"
 
 [dependencies]
+enum-iterator.workspace = true
 eyre.workspace = true
 futures.workspace = true
 tokio.workspace = true
-tracing.workspace = true
 tracing-subscriber = { workspace = true, features = [
 	"env-filter",
 	"fmt",
 	"std",
 ] }
+tracing.workspace = true
 
 # Local dependencies
 deku-adapter-ethereum.workspace = true

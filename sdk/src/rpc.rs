@@ -1,7 +1,7 @@
 use deku_adapter_ethereum::EthereumRpcProvider;
 use deku_adapter_solana::SolanaRpcProvider;
 use deku_adapter_substrate::SubstrateRpcProvider;
-use deku_primitives::OnchainRpcProvider;
+use deku_primitives::{Balance, HexString, OnchainRpcProvider};
 use tracing::info;
 
 use crate::*;
@@ -12,6 +12,17 @@ pub enum Inner {
 	Solana(SolanaRpcProvider),
 	Ethereum(EthereumRpcProvider),
 	Substrate(SubstrateRpcProvider),
+}
+
+macro_rules! chain_call {
+				($self:ident, $method:ident $(, $args:expr)*) => {
+								match &$self.inner {
+												Inner::Ethereum(v) => v.$method($($args),*).await,
+												Inner::Solana(v) => v.$method($($args),*).await,
+												Inner::Substrate(v) => v.$method($($args),*).await,
+												_ => unimplemented!(),
+								}
+				};
 }
 
 pub struct RpcProvider {
@@ -42,21 +53,11 @@ impl RpcProvider {
 }
 
 impl OnchainRpcProvider for RpcProvider {
-	async fn get_block_number(&self) -> Result<u64> {
-		impl_chain_method!(self, (Solana, Ethereum, Substrate)::get_block_number)
+	async fn get_latest_block_number(&self) -> Result<u64> {
+		chain_call!(self, get_latest_block_number)
 	}
-}
 
-/// Helper macro to match and execute the provided method without repeating the redundant variants
-/// in pattern matching.
-#[macro_export]
-macro_rules! impl_chain_method {
-	($self:ident, ($($variant:ident),*)::$method:ident) => {
-		match &$self.inner {
-			$(
-				Inner::$variant(inner_value) => inner_value.$method().await,
-			)*
-			_ => unimplemented!(),
-		}
-	};
+	async fn get_balance(&self, address: HexString) -> Result<Balance> {
+		chain_call!(self, get_balance, address)
+	}
 }
