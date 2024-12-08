@@ -1,0 +1,21 @@
+[package]
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+license.workspace = true
+name = "deku-adapter-substrate"
+version = "0.1.0"
+
+[dependencies]
+eyre.workspace = true
+futures = { workspace = true, default-features = false }
+tokio = { workspace = true, features = [ "rt-multi-thread" ] }
+tracing-subscriber = { workspace = true, features = [ "env-filter" ] }
+
+subxt = { workspace = true, features = [ "unstable-light-client" ] }
+
+deku-primitives.workspace = true
+
+[features]
+default = [ "std" ]
+std = [ "futures/std" ]

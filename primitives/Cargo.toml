@@ -4,3 +4,8 @@ name = "deku-primitives"
 version = "0.1.0"
 
 [dependencies]
+eyre.workspace = true
+
+[features]
+default = [ "std" ]
+std = [  ]

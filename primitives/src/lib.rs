@@ -1,14 +1,14 @@
-pub fn add(left: u64, right: u64) -> u64 {
-	left + right
+use eyre::Result;
+
+pub type BlockNumber = u64;
+
+#[allow(async_fn_in_trait)]
+pub trait OnchainRpcProvider {
+	async fn get_block_number(&self) -> Result<BlockNumber>;
 }
 
-#[cfg(test)]
-mod tests {
-	use super::*;
-
-	#[test]
-	fn it_works() {
-		let result = add(2, 2);
-		assert_eq!(result, 4);
+impl OnchainRpcProvider for () {
+	async fn get_block_number(&self) -> Result<u64> {
+		Ok(0)
 	}
 }

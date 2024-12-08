@@ -4,10 +4,28 @@ name = "deku-core"
 version = "0.1.0"
 
 [dependencies]
-alloy = { version = "0.7", features = [ "full" ] }
-futures = { version = "0.3.31", default-features = false, features = [ "std" ] }
-subxt = { version = "0.38.0", features = [ "unstable-light-client" ] }
-tokio = { version = "1.40", default-features = false, features = [
-	"rt-multi-thread",
+eyre.workspace = true
+futures.workspace = true
+spandoc.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber = { workspace = true, features = [
+	"env-filter",
+	"fmt",
+	"std",
 ] }
-tracing-subscriber = { version = "0.3.18", features = [ "env-filter" ] }
+
+# Local dependencies
+deku-adapter-ethereum.workspace = true
+deku-adapter-solana.workspace = true
+deku-adapter-substrate.workspace = true
+deku-primitives.workspace = true
+
+[features]
+default = [ "std" ]
+std = [
+	"deku-adapter-ethereum/std",
+	"deku-adapter-solana/std",
+	"deku-adapter-substrate/std",
+	"futures/std",
+]
