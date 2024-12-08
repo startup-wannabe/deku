@@ -28,14 +28,16 @@ impl RpcProvider {
 	pub async fn new(chain: &str, url: &str) -> Result<RpcProvider> {
 		info!("Initialization with url: {:?}", url);
 		match chain {
-			c if c == "solana" =>
-				Ok(RpcProvider { inner: Inner::Solana(SolanaRpcProvider::new(&url)?) }),
+			c if c == "solana" => {
+				Ok(RpcProvider { inner: Inner::Solana(SolanaRpcProvider::new(&url)?) })
+			},
 			c if c == "substrate" => {
 				let provider = SubstrateRpcProvider::new(&url).await?;
 				Ok(RpcProvider { inner: Inner::Substrate(provider) })
 			},
-			c if c == "ethereum" =>
-				Ok(RpcProvider { inner: Inner::Ethereum(EthereumRpcProvider::new(&url)?) }),
+			c if c == "ethereum" => {
+				Ok(RpcProvider { inner: Inner::Ethereum(EthereumRpcProvider::new(&url)?) })
+			},
 			_ => Err(eyre!("Unsupported chain")),
 		}
 	}
