@@ -4,6 +4,7 @@ use alloy::{
 };
 use deku_primitives::OnchainRpcProvider;
 use eyre::{Result, WrapErr};
+use tracing::info;
 
 pub struct EthereumRpcProvider {
 	inner: RootProvider<Http<Client>>,
@@ -19,6 +20,7 @@ impl EthereumRpcProvider {
 
 impl OnchainRpcProvider for EthereumRpcProvider {
 	async fn get_block_number(&self) -> Result<u64> {
+		info!(method = "get_block_number");
 		self.inner.get_block_number().await.wrap_err("Failed to get block number")
 	}
 }

@@ -2,7 +2,6 @@ use deku_adapter_ethereum::EthereumRpcProvider;
 use deku_adapter_solana::SolanaRpcProvider;
 use deku_adapter_substrate::SubstrateRpcProvider;
 use deku_primitives::OnchainRpcProvider;
-use spandoc::spandoc;
 use tracing::info;
 
 use crate::*;
@@ -26,9 +25,7 @@ impl Default for RpcProvider {
 }
 
 impl RpcProvider {
-	#[spandoc]
 	pub async fn new(chain: &str, url: &str) -> Result<RpcProvider> {
-		/// SPANDOC: RpcProvider {chain}
 		info!("Initialization with url: {:?}", url);
 		match chain {
 			c if c == "solana" =>
@@ -51,8 +48,6 @@ impl OnchainRpcProvider for RpcProvider {
 			Inner::Ethereum(inner) => inner.get_block_number().await,
 			Inner::Substrate(inner) => inner.get_block_number().await,
 			Inner::Unknown(inner) => inner.get_block_number().await,
-		}?;
-
-		Ok(0)
+		}
 	}
 }

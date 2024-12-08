@@ -11,6 +11,7 @@ alloy.workspace = true
 eyre.workspace = true
 futures = { workspace = true, default-features = false }
 tokio.workspace = true
+tracing.workspace = true
 
 # Local dependencies
 deku-primitives.workspace = true

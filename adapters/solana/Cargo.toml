@@ -11,6 +11,7 @@ eyre.workspace = true
 futures = { workspace = true, default-features = false }
 solana-client.workspace = true
 tokio = { workspace = true, features = [ "rt-multi-thread" ] }
+tracing.workspace = true
 
 deku-primitives.workspace = true
 

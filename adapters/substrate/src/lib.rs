@@ -4,6 +4,7 @@ use subxt::{
 	backend::{legacy::LegacyRpcMethods, rpc::RpcClient},
 	SubstrateConfig,
 };
+use tracing::info;
 
 pub struct SubstrateRpcProvider {
 	inner: RpcClient,
@@ -20,6 +21,7 @@ impl SubstrateRpcProvider {
 
 impl OnchainRpcProvider for SubstrateRpcProvider {
 	async fn get_block_number(&self) -> Result<u64> {
+		info!(method = "get_block_number");
 		let rpc_methods = LegacyRpcMethods::<SubstrateConfig>::new(self.inner.clone());
 		let header = rpc_methods
 			.chain_get_header(None)
