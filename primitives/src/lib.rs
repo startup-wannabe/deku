@@ -4,20 +4,14 @@ pub use ruint::*;
 pub type BlockNumber = u64;
 pub type HexString = String;
 pub type Balance = Uint<256, 4>;
+pub type TxSignature = String;
 
-#[allow(async_fn_in_trait)]
-pub trait OnchainRpcProvider {
-	async fn get_latest_block_number(&self) -> Result<BlockNumber>;
+// pub mod transaction {
+// 	#[cfg(feature = "solana")]
+// 	use solana_transaction_status::EncodedTransactionWithStatusMeta;
 
-	async fn get_balance(&self, address: HexString) -> Result<Balance>;
-}
-
-impl OnchainRpcProvider for () {
-	async fn get_latest_block_number(&self) -> Result<u64> {
-		unimplemented!()
-	}
-
-	async fn get_balance(&self, _address: HexString) -> Result<Balance> {
-		unimplemented!()
-	}
-}
+// 	pub enum MultichainTransaction {
+// 		#[cfg(feature = "solana")]
+// 		Solana(EncodedTransactionWithStatusMeta),
+// 	}
+// }

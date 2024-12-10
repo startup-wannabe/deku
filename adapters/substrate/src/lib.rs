@@ -1,4 +1,5 @@
-use deku_primitives::{Balance, HexString, OnchainRpcProvider, Result, Uint};
+use deku_networks::{substrate::Substrate, Network, OnchainRpcProvider};
+use deku_primitives::{Balance, HexString, Result, Uint};
 use eyre::WrapErr;
 use subxt::{
 	dynamic::{At, DecodedValue, Value},
@@ -38,21 +39,32 @@ impl SubstrateRpcProvider {
 	}
 }
 
-impl OnchainRpcProvider for SubstrateRpcProvider {
-	async fn get_latest_block_number(&self) -> Result<u64> {
+impl OnchainRpcProvider<Substrate> for SubstrateRpcProvider {
+	async fn get_block_number(&self) -> Result<u64> {
 		info!(method = "get_block_number");
 		let block_number = self.inner.blocks().at_latest().await?.number();
 		Ok(block_number.into())
 	}
 
-	async fn get_balance(&self, address: HexString) -> Result<Balance> {
+	async fn get_balance(&self, address: HexString) -> Result<Option<Balance>> {
 		info!(method = "get_balance");
 		let value = self
 			.query_storage("System", "Account", vec![Value::from_bytes(address.as_bytes())])
 			.await?;
 		let account_data = value.at("data");
-		let raw_balance = account_data.at("free").unwrap();
-		let balance = raw_balance.as_u128().unwrap();
-		Ok(Uint::from(balance))
+		Ok(account_data
+			.at("free")
+			.map(|b| {
+				let balance = b.as_u128().unwrap();
+				Some(Uint::from(balance))
+			})
+			.unwrap_or(None))
+	}
+
+	async fn get_transaction(
+		&self,
+		_: <Substrate as Network>::GetTxParam,
+	) -> Result<Option<<Substrate as Network>::TxType>> {
+		unimplemented!()
 	}
 }

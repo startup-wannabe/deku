@@ -6,9 +6,11 @@ license = "Unlicense"
 
 [workspace]
 members = [
+	"adapters",
 	"adapters/ethereum",
 	"adapters/solana",
 	"adapters/substrate",
+	"networks",
 	"primitives",
 	"sdk",
 	"server",
@@ -31,14 +33,17 @@ alloy = { version = "0.7" }
 # Solana
 solana-client = { version = "2.1.5", default-features = false }
 solana-sdk = { version = "2.1.5", default-features = false }
+solana-signature = { version = "2.1.5", default-features = false }
+solana-transaction-status = { version = "2.1.5", default-features = false }
 
 # Substrate
 subxt = { version = "0.38.0" }
-
 
 # Local dependencies
 deku-adapter-ethereum = { path = "adapters/ethereum", default-features = false }
 deku-adapter-solana = { path = "adapters/solana", default-features = false }
 deku-adapter-substrate = { path = "adapters/substrate", default-features = false }
+deku-adapters = { path = "adapters", default-features = false }
+deku-networks = { path = "networks", default-features = false }
 deku-primitives = { path = "primitives", default-features = false }
 deku-sdk = { path = "sdk", default-features = false }

@@ -19,16 +19,13 @@ tracing-subscriber = { workspace = true, features = [
 tracing.workspace = true
 
 # Local dependencies
-deku-adapter-ethereum.workspace = true
-deku-adapter-solana.workspace = true
-deku-adapter-substrate.workspace = true
+deku-adapters.workspace = true
+deku-networks.workspace = true
 deku-primitives.workspace = true
 
 [features]
 default = [ "std" ]
 std = [
-	"deku-adapter-ethereum/std",
-	"deku-adapter-solana/std",
-	"deku-adapter-substrate/std",
+	"deku-adapters/std",
 	"futures/std",
 ]

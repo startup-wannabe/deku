@@ -1,9 +1,10 @@
-use std::str::FromStr;
-
-use deku_primitives::{Balance, HexString, OnchainRpcProvider, Uint};
+use deku_networks::{solana::Solana, Network, OnchainRpcProvider};
+use deku_primitives::{Balance, HexString, Uint};
 use eyre::{Result, WrapErr};
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_sdk::pubkey::Pubkey;
+use solana_transaction_status::UiTransactionEncoding;
+use std::str::FromStr;
 use tracing::info;
 
 pub struct SolanaRpcProvider {
@@ -18,15 +19,32 @@ impl SolanaRpcProvider {
 	}
 }
 
-impl OnchainRpcProvider for SolanaRpcProvider {
-	async fn get_latest_block_number(&self) -> Result<u64> {
+impl OnchainRpcProvider<Solana> for SolanaRpcProvider {
+	async fn get_block_number(&self) -> Result<u64> {
 		info!(method = "get_block_number");
 		self.inner.get_block_height().await.wrap_err("Failed to get block number")
 	}
 
-	async fn get_balance(&self, address: HexString) -> Result<Balance> {
+	async fn get_balance(&self, address: HexString) -> Result<Option<Balance>> {
 		let pubkey = Pubkey::from_str(&address).wrap_err("Failed to parse string")?;
-		let balance = self.inner.get_balance(&pubkey).await.wrap_err("Failed to get balance")?;
-		Ok(Uint::from(balance))
+		Ok(self
+			.inner
+			.get_balance(&pubkey)
+			.await
+			.map(|b| Some(Uint::from(b)))
+			.unwrap_or(None))
+	}
+
+	async fn get_transaction(
+		&self,
+		signature: <Solana as Network>::GetTxParam,
+	) -> Result<Option<<Solana as Network>::TxType>> {
+		let tx = self
+			.inner
+			.get_transaction(&signature, UiTransactionEncoding::Json)
+			.await
+			.map(|tx| Some(tx.transaction))
+			.unwrap_or(None);
+		Ok(tx)
 	}
 }

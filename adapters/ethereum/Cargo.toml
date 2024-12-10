@@ -14,6 +14,7 @@ tokio.workspace = true
 tracing.workspace = true
 
 # Local dependencies
+deku-networks.workspace = true
 deku-primitives.workspace = true
 
 [features]

@@ -1,7 +1,12 @@
-use deku_adapter_ethereum::EthereumRpcProvider;
-use deku_adapter_solana::SolanaRpcProvider;
-use deku_adapter_substrate::SubstrateRpcProvider;
-use deku_primitives::{Balance, HexString, OnchainRpcProvider};
+use std::{any::TypeId, marker::PhantomData};
+
+use deku_adapters::{
+	ethereum::EthereumRpcProvider, solana::SolanaRpcProvider, substrate::SubstrateRpcProvider,
+};
+use deku_networks::{
+	ethereum::Ethereum, solana::Solana, substrate::Substrate, Network, OnchainRpcProvider,
+};
+use deku_primitives::{Balance, HexString};
 use tracing::info;
 
 use crate::*;
@@ -25,39 +30,51 @@ macro_rules! chain_call {
 				};
 }
 
-pub struct RpcProvider {
+pub struct RpcProvider<T: Network> {
 	inner: Inner,
+	network: PhantomData<T>,
 }
 
-impl Default for RpcProvider {
+impl<T: Network> Default for RpcProvider<T> {
 	fn default() -> Self {
-		Self { inner: Inner::Unknown(()) }
+		Self { inner: Inner::Unknown(()), network: PhantomData::default() }
 	}
 }
 
-impl RpcProvider {
-	pub async fn new(chain: &str, url: &str) -> Result<RpcProvider> {
+impl<T: Network + 'static> RpcProvider<T> {
+	pub async fn new(url: &str) -> Result<RpcProvider<T>> {
 		info!("Initialization with url: {:?}", url);
-		match chain {
-			c if c == "solana" =>
-				Ok(RpcProvider { inner: Inner::Solana(SolanaRpcProvider::new(&url)?) }),
-			c if c == "substrate" => {
-				let provider = SubstrateRpcProvider::new(&url).await?;
-				Ok(RpcProvider { inner: Inner::Substrate(provider) })
-			},
-			c if c == "ethereum" =>
-				Ok(RpcProvider { inner: Inner::Ethereum(EthereumRpcProvider::new(&url)?) }),
-			_ => Err(eyre!("Unsupported chain")),
-		}
-	}
-}
+		if TypeId::of::<T>() == TypeId::of::<Solana>() {
+			return Ok(RpcProvider {
+				inner: Inner::Solana(SolanaRpcProvider::new(&url)?),
+				..Default::default()
+			});
+		};
 
-impl OnchainRpcProvider for RpcProvider {
-	async fn get_latest_block_number(&self) -> Result<u64> {
-		chain_call!(self, get_latest_block_number)
+		if TypeId::of::<T>() == TypeId::of::<Substrate>() {
+			let provider = SubstrateRpcProvider::new(&url).await?;
+			return Ok(RpcProvider { inner: Inner::Substrate(provider), ..Default::default() });
+		};
+
+		if TypeId::of::<T>() == TypeId::of::<Ethereum>() {
+			return Ok(RpcProvider {
+				inner: Inner::Ethereum(EthereumRpcProvider::new(&url)?),
+				..Default::default()
+			});
+		};
+
+		Ok(Default::default())
 	}
 
-	async fn get_balance(&self, address: HexString) -> Result<Balance> {
+	pub async fn get_block_number(&self) -> Result<u64> {
+		chain_call!(self, get_block_number)
+	}
+
+	pub async fn get_balance(&self, address: HexString) -> Result<Option<Balance>> {
 		chain_call!(self, get_balance, address)
+	}
+
+	pub async fn get_transaction(&self, _param: T::GetTxParam) -> Result<T::TxType> {
+		unimplemented!()
 	}
 }

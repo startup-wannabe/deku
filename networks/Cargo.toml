@@ -1,0 +1,13 @@
+[package]
+name = "deku-networks"
+version = "0.1.0"
+authors.workspace = true
+description.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+alloy.workspace = true
+deku-primitives.workspace = true
+solana-transaction-status.workspace = true
+solana-signature.workspace = true

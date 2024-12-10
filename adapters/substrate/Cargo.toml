@@ -10,11 +10,13 @@ version = "0.1.0"
 eyre.workspace = true
 futures = { workspace = true, default-features = false }
 tokio.workspace = true
-tracing.workspace = true
 tracing-subscriber = { workspace = true, features = [ "env-filter" ] }
+tracing.workspace = true
 
 subxt = { workspace = true, features = [ "unstable-light-client" ] }
 
+# Local dependencies
+deku-networks.workspace = true
 deku-primitives.workspace = true
 
 [features]
