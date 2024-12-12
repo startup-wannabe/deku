@@ -1,12 +1,10 @@
-use crate::Network;
-
 /// Types for a mainnet-like Substrate-based network.
 #[derive(Clone, Copy, Debug)]
-pub struct Substrate {
+pub struct SubstrateConfig {
 	_private: (),
 }
 
-impl Network for Substrate {
+impl crate::Config for SubstrateConfig {
 	type GetTxParam = String;
 	type TxType = ();
 }

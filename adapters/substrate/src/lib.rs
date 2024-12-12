@@ -1,4 +1,4 @@
-use chainsmith_networks::{substrate::Substrate, Network, OnchainRpcProvider};
+use chainsmith_networks::{substrate::SubstrateConfig, Config, Network, OnchainRpcProvider};
 use chainsmith_primitives::{Balance, HexString, Result, Uint};
 use eyre::WrapErr;
 use subxt::{
@@ -8,18 +8,18 @@ use subxt::{
 };
 use tracing::info;
 
+pub struct Substrate;
+
+impl Network for Substrate {
+	type Config = SubstrateConfig;
+	type Provider = SubstrateRpcProvider;
+}
+
 pub struct SubstrateRpcProvider {
 	inner: OnlineClient<PolkadotConfig>,
 }
 
 impl SubstrateRpcProvider {
-	pub async fn new(url: &str) -> Result<Self> {
-		let api = OnlineClient::<PolkadotConfig>::from_url(url)
-			.await
-			.wrap_err("Failed to initialize the RPC provider")?;
-		Ok(Self { inner: api })
-	}
-
 	pub async fn get_latest_storage(
 		&self,
 	) -> Result<Storage<PolkadotConfig, OnlineClient<PolkadotConfig>>> {
@@ -39,7 +39,14 @@ impl SubstrateRpcProvider {
 	}
 }
 
-impl OnchainRpcProvider<Substrate> for SubstrateRpcProvider {
+impl OnchainRpcProvider<SubstrateConfig> for SubstrateRpcProvider {
+	async fn new(url: &str) -> Result<Self> {
+		let api = OnlineClient::<PolkadotConfig>::from_url(url)
+			.await
+			.wrap_err("Failed to initialize the RPC provider")?;
+		Ok(Self { inner: api })
+	}
+
 	async fn get_block_number(&self) -> Result<u64> {
 		info!(method = "get_block_number");
 		let block_number = self.inner.blocks().at_latest().await?.number();
@@ -63,8 +70,8 @@ impl OnchainRpcProvider<Substrate> for SubstrateRpcProvider {
 
 	async fn get_transaction(
 		&self,
-		_: <Substrate as Network>::GetTxParam,
-	) -> Result<Option<<Substrate as Network>::TxType>> {
+		_: <SubstrateConfig as Config>::GetTxParam,
+	) -> Result<Option<<SubstrateConfig as Config>::TxType>> {
 		unimplemented!()
 	}
 }

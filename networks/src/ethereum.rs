@@ -1,14 +1,12 @@
 use alloy::{primitives::TxHash, rpc::types::Transaction};
 
-use crate::Network;
-
 /// Types for a mainnet-like Ethereum network.
 #[derive(Clone, Copy, Debug)]
-pub struct Ethereum {
+pub struct Config {
 	_private: (),
 }
 
-impl Network for Ethereum {
+impl crate::Config for Config {
 	type GetTxParam = TxHash;
 	type TxType = Transaction;
 }
