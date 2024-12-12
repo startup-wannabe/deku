@@ -1,80 +1,46 @@
-use std::{any::TypeId, marker::PhantomData};
-
-use chainsmith_adapters::{
-	ethereum::EthereumRpcProvider, solana::SolanaRpcProvider, substrate::SubstrateRpcProvider,
-};
-use chainsmith_networks::{
-	ethereum::Ethereum, solana::Solana, substrate::Substrate, Network, OnchainRpcProvider,
-};
-use chainsmith_primitives::{Balance, HexString};
+use chainsmith_networks::{Config, Network, OnchainRpcProvider};
+use chainsmith_primitives::Balance;
 use tracing::info;
 
 use crate::*;
 
-#[allow(clippy::large_enum_variant)]
-pub enum Inner {
-	Unknown(()),
-	Solana(SolanaRpcProvider),
-	Ethereum(EthereumRpcProvider),
-	Substrate(SubstrateRpcProvider),
+pub struct RpcProvider<N: Network> {
+	provider: N::Provider,
 }
 
-macro_rules! chain_call {
-				($self:ident, $method:ident $(, $args:expr)*) => {
-								match &$self.inner {
-												Inner::Ethereum(v) => v.$method($($args),*).await,
-												Inner::Solana(v) => v.$method($($args),*).await,
-												Inner::Substrate(v) => v.$method($($args),*).await,
-												_ => unimplemented!(),
-								}
-				};
-}
-
-pub struct RpcProvider<T: Network> {
-	inner: Inner,
-	network: PhantomData<T>,
-}
-
-impl<T: Network> Default for RpcProvider<T> {
-	fn default() -> Self {
-		Self { inner: Inner::Unknown(()), network: PhantomData::default() }
-	}
-}
-
-impl<T: Network + 'static> RpcProvider<T> {
-	pub async fn new(url: &str) -> Result<RpcProvider<T>> {
+impl<N: Network + 'static> OnchainRpcProvider<N::Config> for RpcProvider<N> {
+	async fn new(url: &str) -> Result<RpcProvider<N>> {
 		info!("Initialization with url: {:?}", url);
-		if TypeId::of::<T>() == TypeId::of::<Solana>() {
-			return Ok(RpcProvider {
-				inner: Inner::Solana(SolanaRpcProvider::new(&url)?),
-				..Default::default()
-			});
-		};
-
-		if TypeId::of::<T>() == TypeId::of::<Substrate>() {
-			let provider = SubstrateRpcProvider::new(&url).await?;
-			return Ok(RpcProvider { inner: Inner::Substrate(provider), ..Default::default() });
-		};
-
-		if TypeId::of::<T>() == TypeId::of::<Ethereum>() {
-			return Ok(RpcProvider {
-				inner: Inner::Ethereum(EthereumRpcProvider::new(&url)?),
-				..Default::default()
-			});
-		};
-
-		Ok(Default::default())
+		let provider = N::Provider::new(&url).await?;
+		Ok(RpcProvider { provider })
 	}
 
-	pub async fn get_block_number(&self) -> Result<u64> {
-		chain_call!(self, get_block_number)
+	async fn get_block_number(&self) -> Result<u64> {
+		self.provider.get_block_number().await
 	}
 
-	pub async fn get_balance(&self, address: HexString) -> Result<Option<Balance>> {
-		chain_call!(self, get_balance, address)
+	async fn get_balance(&self, address: Address) -> Result<Option<Balance>> {
+		self.provider.get_balance(address).await
 	}
 
-	pub async fn get_transaction(&self, _param: T::GetTxParam) -> Result<T::TxType> {
-		unimplemented!()
+	async fn get_transaction(
+		&self,
+		param: <N::Config as Config>::TransactionQuery,
+	) -> Result<Option<<N::Config as Config>::Transaction>> {
+		self.provider.get_transaction(param).await
+	}
+
+	async fn get_account(
+		&self,
+		address: Address,
+	) -> Result<Option<<N::Config as Config>::AccountData>> {
+		self.provider.get_account(address).await
+	}
+
+	async fn get_block_by_number(
+		&self,
+		block_number: BlockNumber,
+	) -> Result<Option<<N::Config as Config>::BlockData>> {
+		self.provider.get_block_by_number(block_number).await
 	}
 }

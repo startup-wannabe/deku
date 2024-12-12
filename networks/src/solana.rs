@@ -1,15 +1,17 @@
+use solana_sdk::account::Account;
 use solana_signature::Signature;
-use solana_transaction_status::EncodedTransactionWithStatusMeta;
-
-use crate::Network;
+use solana_transaction_status::{EncodedConfirmedBlock, EncodedTransactionWithStatusMeta};
 
 /// Types for a mainnet-like Solana network.
 #[derive(Clone, Copy, Debug)]
-pub struct Solana {
+pub struct Config {
 	_private: (),
 }
 
-impl Network for Solana {
-	type GetTxParam = Signature;
-	type TxType = EncodedTransactionWithStatusMeta;
+impl crate::Config for Config {
+	type AccountData = Account;
+	type BlockData = EncodedConfirmedBlock;
+	type BlockQuery = u64;
+	type Transaction = EncodedTransactionWithStatusMeta;
+	type TransactionQuery = Signature;
 }

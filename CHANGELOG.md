@@ -12,6 +12,10 @@ Changing name of the repository from `deku` to `chainsmith`. There is an existin
 blockchain (chain) + blocksmith (smith) = chainsmith
 ```
 
+## Network Configuration
+
+Refactoring the network trait.
+
 ### Issue with the Substrate-based blockchains
 
 > Authors: @chungquantin

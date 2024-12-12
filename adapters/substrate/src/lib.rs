@@ -1,5 +1,7 @@
-use chainsmith_networks::{substrate::Substrate, Network, OnchainRpcProvider};
-use chainsmith_primitives::{Balance, HexString, Result, Uint};
+use chainsmith_networks::{
+	substrate::Config, Config as NetworkConfig, Network, OnchainRpcProvider,
+};
+use chainsmith_primitives::{Address, Balance, BlockNumber, Result, Uint};
 use eyre::WrapErr;
 use subxt::{
 	dynamic::{At, DecodedValue, Value},
@@ -8,18 +10,20 @@ use subxt::{
 };
 use tracing::info;
 
+/// Configuration for the Substrate-based network.
+pub struct Substrate;
+
+impl Network for Substrate {
+	type Config = Config;
+	type Provider = SubstrateRpcProvider;
+}
+
+/// RPC Provider for the Substrate-based network.
 pub struct SubstrateRpcProvider {
 	inner: OnlineClient<PolkadotConfig>,
 }
 
 impl SubstrateRpcProvider {
-	pub async fn new(url: &str) -> Result<Self> {
-		let api = OnlineClient::<PolkadotConfig>::from_url(url)
-			.await
-			.wrap_err("Failed to initialize the RPC provider")?;
-		Ok(Self { inner: api })
-	}
-
 	pub async fn get_latest_storage(
 		&self,
 	) -> Result<Storage<PolkadotConfig, OnlineClient<PolkadotConfig>>> {
@@ -39,14 +43,21 @@ impl SubstrateRpcProvider {
 	}
 }
 
-impl OnchainRpcProvider<Substrate> for SubstrateRpcProvider {
+impl OnchainRpcProvider<Config> for SubstrateRpcProvider {
+	async fn new(url: &str) -> Result<Self> {
+		let api = OnlineClient::<PolkadotConfig>::from_url(url)
+			.await
+			.wrap_err("Failed to initialize the RPC provider")?;
+		Ok(Self { inner: api })
+	}
+
 	async fn get_block_number(&self) -> Result<u64> {
 		info!(method = "get_block_number");
 		let block_number = self.inner.blocks().at_latest().await?.number();
 		Ok(block_number.into())
 	}
 
-	async fn get_balance(&self, address: HexString) -> Result<Option<Balance>> {
+	async fn get_balance(&self, address: Address) -> Result<Option<Balance>> {
 		info!(method = "get_balance");
 		let value = self
 			.query_storage("System", "Account", vec![Value::from_bytes(address.as_bytes())])
@@ -63,8 +74,22 @@ impl OnchainRpcProvider<Substrate> for SubstrateRpcProvider {
 
 	async fn get_transaction(
 		&self,
-		_: <Substrate as Network>::GetTxParam,
-	) -> Result<Option<<Substrate as Network>::TxType>> {
+		_: <Config as NetworkConfig>::TransactionQuery,
+	) -> Result<Option<<Config as NetworkConfig>::Transaction>> {
+		unimplemented!()
+	}
+
+	async fn get_account(
+		&self,
+		_address: Address,
+	) -> Result<Option<<Config as NetworkConfig>::AccountData>> {
+		unimplemented!()
+	}
+
+	async fn get_block_by_number(
+		&self,
+		_block_number: BlockNumber,
+	) -> Result<Option<<Config as NetworkConfig>::BlockData>> {
 		unimplemented!()
 	}
 }

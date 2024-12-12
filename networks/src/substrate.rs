@@ -1,12 +1,15 @@
-use crate::Network;
+use chainsmith_primitives::BlockNumber;
 
 /// Types for a mainnet-like Substrate-based network.
 #[derive(Clone, Copy, Debug)]
-pub struct Substrate {
+pub struct Config {
 	_private: (),
 }
 
-impl Network for Substrate {
-	type GetTxParam = String;
-	type TxType = ();
+impl crate::Config for Config {
+	type AccountData = ();
+	type BlockData = ();
+	type BlockQuery = BlockNumber;
+	type Transaction = ();
+	type TransactionQuery = String;
 }
