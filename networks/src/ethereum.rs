@@ -1,4 +1,8 @@
-use alloy::{primitives::TxHash, rpc::types::Transaction};
+use alloy::{
+	consensus::Account,
+	primitives::{BlockNumber, TxHash},
+	rpc::types::{Block, Transaction},
+};
 
 /// Types for a mainnet-like Ethereum network.
 #[derive(Clone, Copy, Debug)]
@@ -7,6 +11,9 @@ pub struct Config {
 }
 
 impl crate::Config for Config {
-	type GetTxParam = TxHash;
-	type TxType = Transaction;
+	type AccountData = Account;
+	type BlockData = Block;
+	type BlockQuery = BlockNumber;
+	type Transaction = Transaction;
+	type TransactionQuery = TxHash;
 }

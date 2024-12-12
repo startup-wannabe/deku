@@ -1,4 +1,4 @@
-use chainsmith_networks::Network;
+use chainsmith_networks::{Network, OnchainRpcProvider};
 pub use chainsmith_primitives::*;
 use rpc::RpcProvider;
 
