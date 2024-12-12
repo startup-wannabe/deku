@@ -3,7 +3,7 @@ authors.workspace = true
 description.workspace = true
 edition.workspace = true
 license.workspace = true
-name = "deku-adapter-solana"
+name = "chainsmith-adapter-solana"
 version = "0.1.0"
 
 [dependencies]
@@ -16,8 +16,8 @@ tokio = { workspace = true, features = [ "rt-multi-thread" ] }
 tracing.workspace = true
 
 # Local dependencies
-deku-networks.workspace = true
-deku-primitives.workspace = true
+chainsmith-networks.workspace = true
+chainsmith-primitives.workspace = true
 
 [features]
 default = [  ]

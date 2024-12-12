@@ -1,4 +1,4 @@
-use deku_sdk::*;
+use chainsmith_sdk::*;
 
 #[tokio::main]
 async fn main() -> Result<()> {

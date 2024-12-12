@@ -3,8 +3,8 @@ use alloy::{
 	providers::{Provider, ProviderBuilder, RootProvider},
 	transports::http::{Client, Http},
 };
-use deku_networks::{ethereum::Ethereum, Network, OnchainRpcProvider};
-use deku_primitives::{Balance, HexString};
+use chainsmith_networks::{ethereum::Ethereum, Network, OnchainRpcProvider};
+use chainsmith_primitives::{Balance, HexString};
 use eyre::{Result, WrapErr};
 use tracing::info;
 

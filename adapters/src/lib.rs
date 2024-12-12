@@ -1,3 +1,3 @@
-pub use deku_adapter_ethereum as ethereum;
-pub use deku_adapter_solana as solana;
-pub use deku_adapter_substrate as substrate;
+pub use chainsmith_adapter_ethereum as ethereum;
+pub use chainsmith_adapter_solana as solana;
+pub use chainsmith_adapter_substrate as substrate;

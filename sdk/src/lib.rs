@@ -1,5 +1,5 @@
-use deku_networks::Network;
-pub use deku_primitives::*;
+use chainsmith_networks::Network;
+pub use chainsmith_primitives::*;
 use rpc::RpcProvider;
 
 pub mod constants;
@@ -18,13 +18,13 @@ impl DataProvider {
 
 #[cfg(test)]
 mod test {
-	use constants::*;
-	use deku_adapters::{
+	use chainsmith_adapters::{
 		ethereum::EthereumRpcProvider, solana::SolanaRpcProvider, substrate::SubstrateRpcProvider,
 	};
-	use deku_networks::{
+	use chainsmith_networks::{
 		ethereum::Ethereum, solana::Solana, substrate::Substrate, OnchainRpcProvider,
 	};
+	use constants::*;
 
 	use crate::*;
 

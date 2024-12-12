@@ -1,5 +1,5 @@
-use deku_networks::{substrate::Substrate, Network, OnchainRpcProvider};
-use deku_primitives::{Balance, HexString, Result, Uint};
+use chainsmith_networks::{substrate::Substrate, Network, OnchainRpcProvider};
+use chainsmith_primitives::{Balance, HexString, Result, Uint};
 use eyre::WrapErr;
 use subxt::{
 	dynamic::{At, DecodedValue, Value},

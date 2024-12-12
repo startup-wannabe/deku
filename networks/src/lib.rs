@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use deku_primitives::{Balance, BlockNumber, HexString, Result};
+use chainsmith_primitives::{Balance, BlockNumber, HexString, Result};
 use ethereum::Ethereum;
 
 pub mod ethereum;

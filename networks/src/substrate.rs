@@ -7,6 +7,6 @@ pub struct Substrate {
 }
 
 impl Network for Substrate {
-	type TxType = ();
 	type GetTxParam = String;
+	type TxType = ();
 }

@@ -1,10 +1,11 @@
-use deku_networks::{solana::Solana, Network, OnchainRpcProvider};
-use deku_primitives::{Balance, HexString, Uint};
+use std::str::FromStr;
+
+use chainsmith_networks::{solana::Solana, Network, OnchainRpcProvider};
+use chainsmith_primitives::{Balance, HexString, Uint};
 use eyre::{Result, WrapErr};
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_sdk::pubkey::Pubkey;
 use solana_transaction_status::UiTransactionEncoding;
-use std::str::FromStr;
 use tracing::info;
 
 pub struct SolanaRpcProvider {

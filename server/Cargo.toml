@@ -3,7 +3,7 @@ authors.workspace = true
 description.workspace = true
 edition.workspace = true
 license.workspace = true
-name = "deku-server"
+name = "chainsmith-server"
 version = "0.1.0"
 
 [dependencies]
@@ -18,11 +18,11 @@ tracing-subscriber = { workspace = true, features = [
 tracing.workspace = true
 
 # Local dependencies
-deku-sdk.workspace = true
+chainsmith-sdk.workspace = true
 
 [features]
 default = [ "std" ]
 std = [
-	"deku-sdk/std",
+	"chainsmith-sdk/std",
 	"futures/std",
 ]

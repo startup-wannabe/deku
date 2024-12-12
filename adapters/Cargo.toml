@@ -3,18 +3,18 @@ authors.workspace = true
 description.workspace = true
 edition.workspace = true
 license.workspace = true
-name = "deku-adapters"
+name = "chainsmith-adapters"
 version = "0.1.0"
 
 [dependencies]
-deku-adapter-ethereum.workspace = true
-deku-adapter-solana.workspace = true
-deku-adapter-substrate.workspace = true
+chainsmith-adapter-ethereum.workspace = true
+chainsmith-adapter-solana.workspace = true
+chainsmith-adapter-substrate.workspace = true
 
 [features]
 default = [  ]
 std = [
-	"deku-adapter-ethereum/std",
-	"deku-adapter-solana/std",
-	"deku-adapter-substrate/std",
+	"chainsmith-adapter-ethereum/std",
+	"chainsmith-adapter-solana/std",
+	"chainsmith-adapter-substrate/std",
 ]

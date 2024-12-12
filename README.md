@@ -1,13 +1,23 @@
-# Deku v0.0.1
+# chainsmith-rs
 
-Chain agnostic data orchestration library that empowers Web3.0 to work with onchain data seamlessly and effortlessly in Rust.
+`chainsmith-rs` is a high-performance chain-agnostic data orchestration Rust library designed to empower Web3.0 by simplifying the interaction with on-chain data.
+
+Just like a blacksmith crafts tools with precision and care, ChainSmith enables developers to seamlessly and effortlessly work with data across multiple blockchains, abstracting away the complexities of multichain interactions.
+
+Whether you're building decentralized applications or integrating cross-chain functionality, ChainSmith provides a powerful, efficient, and scalable solution to aggregate, process, and manage on-chain data with ease.
 
 ## Architecture
 
-- `deku-sdk`: Core software development kit used for applications on top of the Deku data infrastructure to interact with multichain data.
-- `deku-adapters/*`: Contains all data adapter used in the Deku SDK.
-- `deku-primitvies`: Primitive types used by the adapters and the SDK.
-- `deku-server`: Middleware backend to help applications work with the SDK via RESTful APIs.
+- `chainsmith-sdk`: Core software development kit used for applications on top of the Deku data infrastructure to interact with multichain data.
+- `chainsmith-networks`: Container crate of all blockchain network configuration.
+- `chainsmith-adapters/*`: Contains all data adapter used in the Deku SDK.
+- `chainsmith-primitvies`: Primitive types used by the adapters and the SDK.
+- `chainsmith-server`: Middleware backend to help applications work with the SDK via RESTful APIs.
+
+## Features
+
+- [ ] Chain abstraction SDK library to query data from multiple different blockchains without worrying about the inconsistent in RPC APIs and data types.
+- [ ] Orchestration functionality.
 
 ## Usage
 

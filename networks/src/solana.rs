@@ -10,6 +10,6 @@ pub struct Solana {
 }
 
 impl Network for Solana {
-	type TxType = EncodedTransactionWithStatusMeta;
 	type GetTxParam = Signature;
+	type TxType = EncodedTransactionWithStatusMeta;
 }

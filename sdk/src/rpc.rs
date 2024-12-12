@@ -1,12 +1,12 @@
 use std::{any::TypeId, marker::PhantomData};
 
-use deku_adapters::{
+use chainsmith_adapters::{
 	ethereum::EthereumRpcProvider, solana::SolanaRpcProvider, substrate::SubstrateRpcProvider,
 };
-use deku_networks::{
+use chainsmith_networks::{
 	ethereum::Ethereum, solana::Solana, substrate::Substrate, Network, OnchainRpcProvider,
 };
-use deku_primitives::{Balance, HexString};
+use chainsmith_primitives::{Balance, HexString};
 use tracing::info;
 
 use crate::*;

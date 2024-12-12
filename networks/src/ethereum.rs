@@ -9,6 +9,6 @@ pub struct Ethereum {
 }
 
 impl Network for Ethereum {
-	type TxType = Transaction;
 	type GetTxParam = TxHash;
+	type TxType = Transaction;
 }

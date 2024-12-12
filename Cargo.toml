@@ -40,10 +40,10 @@ solana-transaction-status = { version = "2.1.5", default-features = false }
 subxt = { version = "0.38.0" }
 
 # Local dependencies
-deku-adapter-ethereum = { path = "adapters/ethereum", default-features = false }
-deku-adapter-solana = { path = "adapters/solana", default-features = false }
-deku-adapter-substrate = { path = "adapters/substrate", default-features = false }
-deku-adapters = { path = "adapters", default-features = false }
-deku-networks = { path = "networks", default-features = false }
-deku-primitives = { path = "primitives", default-features = false }
-deku-sdk = { path = "sdk", default-features = false }
+chainsmith-adapter-ethereum = { path = "adapters/ethereum", default-features = false }
+chainsmith-adapter-solana = { path = "adapters/solana", default-features = false }
+chainsmith-adapter-substrate = { path = "adapters/substrate", default-features = false }
+chainsmith-adapters = { path = "adapters", default-features = false }
+chainsmith-networks = { path = "networks", default-features = false }
+chainsmith-primitives = { path = "primitives", default-features = false }
+chainsmith-sdk = { path = "sdk", default-features = false }

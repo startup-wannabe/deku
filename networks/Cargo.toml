@@ -1,5 +1,5 @@
 [package]
-name = "deku-networks"
+name = "chainsmith-networks"
 version = "0.1.0"
 authors.workspace = true
 description.workspace = true
@@ -8,6 +8,6 @@ license.workspace = true
 
 [dependencies]
 alloy.workspace = true
-deku-primitives.workspace = true
+chainsmith-primitives.workspace = true
 solana-transaction-status.workspace = true
 solana-signature.workspace = true

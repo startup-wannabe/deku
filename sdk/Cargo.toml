@@ -3,7 +3,7 @@ authors.workspace = true
 description.workspace = true
 edition.workspace = true
 license.workspace = true
-name = "deku-sdk"
+name = "chainsmith-sdk"
 version = "0.1.0"
 
 [dependencies]
@@ -19,13 +19,13 @@ tracing-subscriber = { workspace = true, features = [
 tracing.workspace = true
 
 # Local dependencies
-deku-adapters.workspace = true
-deku-networks.workspace = true
-deku-primitives.workspace = true
+chainsmith-adapters.workspace = true
+chainsmith-networks.workspace = true
+chainsmith-primitives.workspace = true
 
 [features]
 default = [ "std" ]
 std = [
-	"deku-adapters/std",
+	"chainsmith-adapters/std",
 	"futures/std",
 ]
