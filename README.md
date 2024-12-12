@@ -1,3 +1,5 @@
+<img src="https://github.com/user-attachments/assets/d2388e57-eec8-45f0-bf78-0b121d9d0554" width="80px"/>
+
 # chainsmith-rs
 
 `chainsmith-rs` is a high-performance chain-agnostic data orchestration Rust library designed to empower Web3.0 by simplifying the interaction with on-chain data.
