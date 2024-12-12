@@ -1,5 +1,5 @@
 use chainsmith_networks::{substrate::Substrate, Network, OnchainRpcProvider};
-use chainsmith_primitives::{Balance, HexString, Result, Uint};
+use chainsmith_primitives::{Address, Balance, Result, Uint};
 use eyre::WrapErr;
 use subxt::{
 	dynamic::{At, DecodedValue, Value},
@@ -41,13 +41,13 @@ impl SubstrateRpcProvider {
 
 impl OnchainRpcProvider<Substrate> for SubstrateRpcProvider {
 	async fn get_block_number(&self) -> Result<u64> {
-		info!(method = "get_block_number");
+		info!(chain = Substrate::CHAIN, method = "get_block_number");
 		let block_number = self.inner.blocks().at_latest().await?.number();
 		Ok(block_number.into())
 	}
 
-	async fn get_balance(&self, address: HexString) -> Result<Option<Balance>> {
-		info!(method = "get_balance");
+	async fn get_balance(&self, address: Address) -> Result<Option<Balance>> {
+		info!(chain = Substrate::CHAIN, method = "get_balance");
 		let value = self
 			.query_storage("System", "Account", vec![Value::from_bytes(address.as_bytes())])
 			.await?;
@@ -63,8 +63,10 @@ impl OnchainRpcProvider<Substrate> for SubstrateRpcProvider {
 
 	async fn get_transaction(
 		&self,
-		_: <Substrate as Network>::GetTxParam,
+		hash: <Substrate as Network>::TxSignature,
 	) -> Result<Option<<Substrate as Network>::TxType>> {
-		unimplemented!()
+		info!(chain = Substrate::CHAIN, method = "get_transaction");
+		self.inner.blocks().at(hash).await?;
+		Ok(None)
 	}
 }

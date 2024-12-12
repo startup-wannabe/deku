@@ -1,10 +1,10 @@
 use alloy::{
-	primitives::Address,
+	primitives::Address as EthereumAddress,
 	providers::{Provider, ProviderBuilder, RootProvider},
 	transports::http::{Client, Http},
 };
 use chainsmith_networks::{ethereum::Ethereum, Network, OnchainRpcProvider};
-use chainsmith_primitives::{Balance, HexString};
+use chainsmith_primitives::{Address, Balance};
 use eyre::{Result, WrapErr};
 use tracing::info;
 
@@ -26,15 +26,15 @@ impl OnchainRpcProvider<Ethereum> for EthereumRpcProvider {
 		self.inner.get_block_number().await.wrap_err("Failed to get block number")
 	}
 
-	async fn get_balance(&self, address: HexString) -> Result<Option<Balance>> {
+	async fn get_balance(&self, address: Address) -> Result<Option<Balance>> {
 		let address =
-			Address::parse_checksummed(address, None).wrap_err("Failed to get balance")?;
+			EthereumAddress::parse_checksummed(address, None).wrap_err("Failed to get balance")?;
 		Ok(self.inner.get_balance(address).await.map(|b| Some(b)).unwrap_or(None))
 	}
 
 	async fn get_transaction(
 		&self,
-		tx_hash: <Ethereum as Network>::GetTxParam,
+		tx_hash: <Ethereum as Network>::TxSignature,
 	) -> Result<Option<<Ethereum as Network>::TxType>> {
 		Ok(self.inner.get_transaction_by_hash(tx_hash).await?)
 	}
