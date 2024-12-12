@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use chainsmith_networks::{solana::Solana, Network, OnchainRpcProvider};
-use chainsmith_primitives::{Balance, HexString, Uint};
+use chainsmith_primitives::{Address, Balance, Uint};
 use eyre::{Result, WrapErr};
 use solana_client::nonblocking::rpc_client::RpcClient;
 use solana_sdk::pubkey::Pubkey;
@@ -26,7 +26,7 @@ impl OnchainRpcProvider<Solana> for SolanaRpcProvider {
 		self.inner.get_block_height().await.wrap_err("Failed to get block number")
 	}
 
-	async fn get_balance(&self, address: HexString) -> Result<Option<Balance>> {
+	async fn get_balance(&self, address: Address) -> Result<Option<Balance>> {
 		let pubkey = Pubkey::from_str(&address).wrap_err("Failed to parse string")?;
 		Ok(self
 			.inner
@@ -38,7 +38,7 @@ impl OnchainRpcProvider<Solana> for SolanaRpcProvider {
 
 	async fn get_transaction(
 		&self,
-		signature: <Solana as Network>::GetTxParam,
+		signature: <Solana as Network>::TxSignature,
 	) -> Result<Option<<Solana as Network>::TxType>> {
 		let tx = self
 			.inner

@@ -6,7 +6,7 @@ use chainsmith_adapters::{
 use chainsmith_networks::{
 	ethereum::Ethereum, solana::Solana, substrate::Substrate, Network, OnchainRpcProvider,
 };
-use chainsmith_primitives::{Balance, HexString};
+use chainsmith_primitives::{Address, Balance};
 use tracing::info;
 
 use crate::*;
@@ -30,33 +30,39 @@ macro_rules! chain_call {
 				};
 }
 
-pub struct RpcProvider<T: Network> {
+pub struct RpcProvider<N: Network> {
 	inner: Inner,
-	network: PhantomData<T>,
+	network: PhantomData<N>,
 }
 
-impl<T: Network> Default for RpcProvider<T> {
+impl<N: Network> Default for RpcProvider<N> {
 	fn default() -> Self {
 		Self { inner: Inner::Unknown(()), network: PhantomData::default() }
 	}
 }
 
-impl<T: Network + 'static> RpcProvider<T> {
-	pub async fn new(url: &str) -> Result<RpcProvider<T>> {
+impl<
+		N: Network
+			+ ConvertIO<TxSignature, N::TxSignature>
+			+ ConvertIO<N::TxType, UniversalTx<N::TxType>>
+			+ 'static,
+	> RpcProvider<N>
+{
+	pub async fn new(url: &str) -> Result<RpcProvider<N>> {
 		info!("Initialization with url: {:?}", url);
-		if TypeId::of::<T>() == TypeId::of::<Solana>() {
+		if TypeId::of::<N>() == TypeId::of::<Solana>() {
 			return Ok(RpcProvider {
 				inner: Inner::Solana(SolanaRpcProvider::new(&url)?),
 				..Default::default()
 			});
 		};
 
-		if TypeId::of::<T>() == TypeId::of::<Substrate>() {
+		if TypeId::of::<N>() == TypeId::of::<Substrate>() {
 			let provider = SubstrateRpcProvider::new(&url).await?;
 			return Ok(RpcProvider { inner: Inner::Substrate(provider), ..Default::default() });
 		};
 
-		if TypeId::of::<T>() == TypeId::of::<Ethereum>() {
+		if TypeId::of::<N>() == TypeId::of::<Ethereum>() {
 			return Ok(RpcProvider {
 				inner: Inner::Ethereum(EthereumRpcProvider::new(&url)?),
 				..Default::default()
@@ -70,11 +76,30 @@ impl<T: Network + 'static> RpcProvider<T> {
 		chain_call!(self, get_block_number)
 	}
 
-	pub async fn get_balance(&self, address: HexString) -> Result<Option<Balance>> {
+	pub async fn get_balance(&self, address: Address) -> Result<Option<Balance>> {
 		chain_call!(self, get_balance, address)
 	}
 
-	pub async fn get_transaction(&self, _param: T::GetTxParam) -> Result<T::TxType> {
-		unimplemented!()
+	pub async fn get_transaction(&self, param: TxSignature) -> Result<Option<N::TxType>> {
+		match &self.inner {
+			Inner::Ethereum(v) => {
+				let signature = Ethereum::convert(param)?;
+				let tx = v.get_transaction(signature).await?.unwrap();
+				let a: UniversalTx<()> = Ethereum::convert(tx)?;
+			},
+			Inner::Solana(v) => {
+				let signature = Solana::convert(param)?;
+				let tx = v.get_transaction(signature).await?.unwrap();
+				let a: UniversalTx<()> = Solana::convert(tx)?;
+			},
+			Inner::Substrate(v) => {
+				let signature = Substrate::convert(param)?;
+				let tx = v.get_transaction(signature).await?.unwrap();
+				let a: UniversalTx<()> = Substrate::convert(tx)?;
+			},
+			_ => unimplemented!(),
+		};
+		// chain_call!(self, get_transaction, param)
+		Ok(None)
 	}
 }

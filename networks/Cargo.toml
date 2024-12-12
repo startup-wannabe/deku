@@ -8,6 +8,9 @@ license.workspace = true
 
 [dependencies]
 alloy.workspace = true
-chainsmith-primitives.workspace = true
 solana-transaction-status.workspace = true
 solana-signature.workspace = true
+subxt = { workspace = true }
+
+# Local dependencies
+chainsmith-primitives.workspace = true
