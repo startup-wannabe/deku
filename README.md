@@ -20,6 +20,8 @@ Whether you're building decentralized applications or integrating cross-chain fu
 
 - [ ] Chain abstraction SDK library to query data from multiple different blockchains without worrying about the inconsistent in RPC APIs and data types.
 - [ ] Orchestration functionality.
+- [ ] Smart contract indexing functionality
+- [ ] User-defined configration to expand the functionalities of the SDK.
 
 ## Usage
 
