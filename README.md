@@ -26,11 +26,11 @@ Whether you're building decentralized applications or integrating cross-chain fu
 ## Usage
 
 ```rs
-// Using a generic data provider.
-let provider = DataProvider::chain("<CHAIN_NAME>").rpc("<RPC_URL>").await.unwrap();
+let provider = ChainsmithSdk::default().rpc::<CHAIN_NAME>(SOLANA_HTTPS_URL).await.unwrap();
+let raw_provider = SolanaRpcProvider::new(<RPC_URL>).await.unwrap();
 
-// Using raw provider for onchain data.
-let raw_provider = SubstrateRpcProvider::new("<RPC_URL>").await.unwrap();
+assert!(provider.get_block_number().await.unwrap() > 0);
+assert!(raw_provider.get_block_number().await.unwrap() > 0);
 ```
 
 - `<CHAIN_NAME>` = `solana` | `substrate` | `ethereum`
