@@ -1,9 +1,9 @@
-use chainsmith_networks::{Network, OnchainRpcProvider};
+use chain::ChainMiddleware;
+use chainsmith_networks::Network;
 pub use chainsmith_primitives::*;
-use rpc::RpcProvider;
 
+pub mod chain;
 pub mod constants;
-pub mod rpc;
 
 #[derive(Default)]
 pub struct ChainsmithSdk {
@@ -11,8 +11,8 @@ pub struct ChainsmithSdk {
 }
 
 impl ChainsmithSdk {
-	pub async fn rpc<N: Network + 'static>(&self, url: &str) -> Result<RpcProvider<N>> {
-		RpcProvider::<N>::new(url).await
+	pub fn chain<N: Network + 'static>() -> ChainMiddleware<N> {
+		ChainMiddleware::<N>::default()
 	}
 }
 
@@ -21,7 +21,7 @@ mod test {
 	use chainsmith_adapters::{
 		ethereum::{Ethereum, EthereumRpcProvider},
 		solana::{Solana, SolanaRpcProvider},
-		substrate::{Substrate, SubstrateRpcProvider},
+		substrate::SubstrateRpcProvider,
 	};
 	use chainsmith_networks::OnchainRpcProvider;
 	use constants::*;
@@ -30,7 +30,7 @@ mod test {
 
 	#[tokio::test]
 	async fn solana_get_block_number_works() {
-		let provider = ChainsmithSdk::default().rpc::<Solana>(SOLANA_HTTPS_URL).await.unwrap();
+		let provider = ChainsmithSdk::chain::<Solana>().rpc(SOLANA_HTTPS_URL).await.unwrap();
 		let raw_provider = SolanaRpcProvider::new(SOLANA_HTTPS_URL).await.unwrap();
 
 		// Solana is too fast, can't compare. Nice solana!
@@ -40,8 +40,7 @@ mod test {
 
 	#[tokio::test]
 	async fn substrate_get_block_number_works() {
-		let provider =
-			ChainsmithSdk::default().rpc::<Substrate>(SUBSTRATE_HTTPS_URL).await.unwrap();
+		let provider = ChainsmithSdk::chain::<Solana>().rpc(SUBSTRATE_HTTPS_URL).await.unwrap();
 		let raw_provider = SubstrateRpcProvider::new(SUBSTRATE_HTTPS_URL).await.unwrap();
 
 		assert!(provider.get_block_number().await.unwrap() > 0);
@@ -54,7 +53,7 @@ mod test {
 
 	#[tokio::test]
 	async fn ethereum_get_block_number_works() {
-		let provider = ChainsmithSdk::default().rpc::<Ethereum>(ETHEREUM_HTTPS_URL).await.unwrap();
+		let provider = ChainsmithSdk::chain::<Ethereum>().rpc(ETHEREUM_HTTPS_URL).await.unwrap();
 		let raw_provider = EthereumRpcProvider::new(ETHEREUM_HTTPS_URL).await.unwrap();
 
 		assert!(provider.get_block_number().await.unwrap() > 0);
